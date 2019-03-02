@@ -25,15 +25,6 @@ class HSSFWorkbookGenerator {
         }
     }
 
-//    void createHead(String[] columnsNames, int sheetNumber) {
-//        HSSFRow rowhead = this.sheets.get(sheetNumber).createRow((short)this.rowsCount);
-//        this.rowsCount = 1;
-//
-//        for (int i = 0; i < columnsNames.length; i++) {
-//            rowhead.createCell(i).setCellValue(columnsNames[i]);
-//        }
-//    }
-
     void createRow(String[] cells, int sheetNumber) {
         HSSFRow row = this.sheets.get(sheetNumber).createRow((short)this.rowsCount);
         this.rowsCount += 1;

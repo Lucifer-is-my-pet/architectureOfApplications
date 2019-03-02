@@ -2,7 +2,7 @@ package main.modules;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class RandomNumber {
+class RandomNumber {
 
     private int randomNumber;
     private int start = 0;
@@ -21,11 +21,11 @@ public class RandomNumber {
         return ThreadLocalRandom.current().nextInt(this.start, bound);
     }
 
-    public int get() {
+    int get() {
         return this.randomNumber;
     }
 
-    public String getString() {
+    String getString() {
         return Integer.toString(this.randomNumber);
     }
 }

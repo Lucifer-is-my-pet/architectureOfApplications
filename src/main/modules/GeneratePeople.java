@@ -6,23 +6,12 @@ import java.util.*;
 
 class GeneratePeople {
 
-    private static String[] readLines(String filename) throws IOException {
-        FileReader fileReader = new FileReader(filename);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        List<String> lines = new ArrayList<String>();
-        String line = null;
-        while ((line = bufferedReader.readLine()) != null) {
-            lines.add(line);
-        }
-        bufferedReader.close();
-        return lines.toArray(new String[lines.size()]);
-    }
-
     public static void main(String[]args) {
         final String MALE = "Муж";
         final String FEMALE = "Жен";
-        final String PATH = "";
-        
+        final String RESOURCES_PATH = "." + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator;
+        final String OUTPUT_PATH = "src" + File.separator + "main" + File.separator + "output" + File.separator;
+
         String[] countries = null;
         String[] districts = null;
         String[] cities = null;
@@ -31,17 +20,19 @@ class GeneratePeople {
         Map<String, String[]> surnames = new HashMap<>();
         Map<String, String[]> patronNames = new HashMap<>();
 
+        FileReaderToArray readerToArray = new FileReaderToArray();
+
         try {
-            countries = readLines("./src/main/resources/Countries.txt");
-            districts = readLines("./src/main/resources/Districts.txt");
-            cities = readLines("./src/main/resources/Cities.txt");
-            streets = readLines("./src/main/resources/Streets.txt");
-            names.put(MALE, readLines("./src/main/resources/Names_m.txt"));
-            names.put(FEMALE, readLines("./src/main/resources/Names_f.txt"));
-            surnames.put(MALE, readLines("./src/main/resources/Surnames_m.txt"));
-            surnames.put(FEMALE, readLines("./src/main/resources/Surnames_f.txt"));
-            patronNames.put(MALE, readLines("./src/main/resources/Patronymic_m.txt"));
-            patronNames.put(FEMALE, readLines("./src/main/resources/Patronymic_f.txt"));
+            countries = readerToArray.readLines(RESOURCES_PATH + "Countries.txt");
+            districts = readerToArray.readLines(RESOURCES_PATH + "Districts.txt");
+            cities = readerToArray.readLines(RESOURCES_PATH + "Cities.txt");
+            streets = readerToArray.readLines(RESOURCES_PATH + "Streets.txt");
+            names.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Names_m.txt"));
+            names.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Names_f.txt"));
+            surnames.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Surnames_m.txt"));
+            surnames.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Surnames_f.txt"));
+            patronNames.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_m.txt"));
+            patronNames.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_f.txt"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,7 +68,7 @@ class GeneratePeople {
                 people.createRow(cells, 0);
             }
 
-            File filename = new File("src/main/resources/Люди.xls");
+            File filename = new File(OUTPUT_PATH + "Люди.xls");
             FileOutputStream fileOut = new FileOutputStream(filename);
             people.write(fileOut);
             fileOut.close();

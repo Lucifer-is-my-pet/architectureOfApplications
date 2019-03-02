@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
 /*
- * Создаёт валидный ИНН физического лица (12 символов)
+ * Создаёт валидный ИНН физического лица (12 цифр)
  */
 class ITNGenerator {
 

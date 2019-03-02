@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /*
 * Генерирует дату рождения и высчитывает возраст, исходя из сгенерированного
  */
-public class Birthdate {
+class Birthdate {
 
     private String birthdate;
     private String pattern;
@@ -33,7 +33,7 @@ public class Birthdate {
         this.birthdate = dateFormat.format(birthday.getTime());
     }
 
-    public String get() {
+    String get() {
         return this.birthdate;
     }
 
