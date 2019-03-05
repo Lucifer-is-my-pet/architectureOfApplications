@@ -19,6 +19,7 @@ class FileReaderToArray {
             lines.add(line);
         }
         bufferedReader.close();
+        fileReader.close();
         return lines.toArray(new String[lines.size()]);
     }
 }
