@@ -37,6 +37,10 @@ class Birthdate {
         return this.birthdate;
     }
 
+    void setBirthdate(String birthdate) {
+        this.birthdate = birthdate;
+    }
+
     long getAge() {
         LocalDate localBirthDate = LocalDate.parse(this.birthdate, DateTimeFormatter.ofPattern(this.pattern));
         LocalDate now = LocalDate.now(ZoneId.systemDefault());
