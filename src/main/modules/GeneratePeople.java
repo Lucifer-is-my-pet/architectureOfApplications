@@ -14,12 +14,12 @@ class GeneratePeople {
     public static void main(String[] args) {
         final String MALE = "Муж";
         final String FEMALE = "Жен";
-        // new StringBuilder().append(".").append(File.separator).append("src")
-        //                .append(File.separator).append("main").append(File.separator).append("resources").append(File.separator).toString()
-        final String RESOURCES_PATH = "C:\\Users\\guralnik\\Documents\\GitHub\\architectureOfApplications\\src\\main\\resources\\";
-        // new StringBuilder().append("src").append(File.separator).append("main")
-        //                .append(File.separator).append("output").append(File.separator).toString()
-        final String OUTPUT_PATH = "C:\\Users\\guralnik\\Documents\\GitHub\\architectureOfApplications\\src\\main\\output\\";
+        // "C:\\Users\\guralnik\\Documents\\GitHub\\architectureOfApplications\\src\\main\\resources\\"
+        final String RESOURCES_PATH = new StringBuilder().append(".").append(File.separator).append("src")
+                .append(File.separator).append("main").append(File.separator).append("resources").append(File.separator).toString();
+        // "C:\\Users\\guralnik\\Documents\\GitHub\\architectureOfApplications\\src\\main\\output\\"
+        final String OUTPUT_PATH = new StringBuilder().append("src").append(File.separator).append("main")
+                .append(File.separator).append("output").append(File.separator).toString();
 
         String[] countries = null;
         String[] districts = null;

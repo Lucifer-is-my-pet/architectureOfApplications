@@ -5,6 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Deserializer implements JsonDeserializer<ArrayList> {
 
@@ -29,7 +31,12 @@ public class Deserializer implements JsonDeserializer<ArrayList> {
     }};
 
     private String getStreet(String streetAndNumber) {
-        return null; // todo
+        if (Pattern.matches(".*\\d.*", streetAndNumber)) {
+            String[] splitted = streetAndNumber.split("\\d+");
+            return String.trim(StringUtils.join(splitted));
+        } else {
+            return streetAndNumber;
+        }
     }
 
 //    @Override
@@ -85,13 +92,7 @@ public class Deserializer implements JsonDeserializer<ArrayList> {
         result.add(this.countries.get(jsonObject.get("nat").getAsString()));
         result.add(StringUtils.capitalize(jsonObject.get("location").getAsJsonObject().get("state").getAsString()));
         result.add(StringUtils.capitalize(jsonObject.get("location").getAsJsonObject().get("city").getAsString()));
-        try {
-            result.add(StringUtils.capitalize(jsonObject.get("location").getAsJsonObject().get("street").getAsString().split("\\d+")[1]));
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            System.out.println(jsonObject.get("location"));
-            result.add(StringUtils.capitalize(jsonObject.get("location").getAsJsonObject().get("street").getAsString()));
-        }
-
+        result.add(StringUtils.capitalize(getStreet(jsonObject.get("location").getAsJsonObject().get("street").getAsString())));
         result.add(jsonObject.get("location").getAsJsonObject().get("street").getAsString().split(" ")[0]);
         result.add(new RandomNumber(1, 1000).getString()); // ??
 
