@@ -1,16 +1,25 @@
 package main.modules;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 
 
 class GeneratePeople {
 
-    public static void main(String[]args) {
+    public static void main(String[] args) {
         final String MALE = "Муж";
         final String FEMALE = "Жен";
-        final String RESOURCES_PATH = "." + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator;
-        final String OUTPUT_PATH = "src" + File.separator + "main" + File.separator + "output" + File.separator;
+        // new StringBuilder().append(".").append(File.separator).append("src")
+        //                .append(File.separator).append("main").append(File.separator).append("resources").append(File.separator).toString()
+        final String RESOURCES_PATH = "C:\\Users\\guralnik\\Documents\\GitHub\\architectureOfApplications\\src\\main\\resources\\";
+        // new StringBuilder().append("src").append(File.separator).append("main")
+        //                .append(File.separator).append("output").append(File.separator).toString()
+        final String OUTPUT_PATH = "C:\\Users\\guralnik\\Documents\\GitHub\\architectureOfApplications\\src\\main\\output\\";
 
         String[] countries = null;
         String[] districts = null;
@@ -37,36 +46,59 @@ class GeneratePeople {
             e.printStackTrace();
         }
 
-        try {
-            String[] sheetsNames = {"Люди"};
-            String[] columnNames = {"Имя", "Фамилия", "Отчество", "Возраст", "Пол", "Дата рождения", "ИНН",
-                    "Почтовый индекс", "Страна", "Область", "Город", "Улица", "Дом", "Квартира"};
+        String[] sheetsNames = {"Люди"};
+        String[] columnNames = {"Имя", "Фамилия", "Отчество", "Возраст", "Пол", "Дата рождения", "ИНН",
+                "Почтовый индекс", "Страна", "Область", "Город", "Улица", "Дом", "Квартира"};
 
+        int rowsCount = new RandomNumber(1, 31).get();
+
+        HashMap<String, String> params = new HashMap<String, String>() {{
+            put("inc", "gender,name,location,nat,dob,id");
+        }};
+
+        ArrayList<String> cells = new ArrayList<>();
+
+        try {
             HSSFWorkbookGenerator people = new HSSFWorkbookGenerator(sheetsNames);
             people.createRow(columnNames, 0); // заголовки
 
-            int rowsCount = new RandomNumber(1, 31).get();
+            InetAddress inetAddress = InetAddress.getByName("randomuser.me");
+
             for (int i = 1; i < rowsCount + 1; i++) {
-                String sex = (i % 2 == 0) ? MALE : FEMALE;
-                Birthdate birthdate = new Birthdate("dd-MM-yyyy");
+                if (inetAddress.isReachable(700)) {
+                    String resp = new API("https://randomuser.me/api/").getResponse(1, params, "noinfo");
+                    Gson gson = new GsonBuilder()
+                            .setPrettyPrinting()
+                            .registerTypeAdapter(ArrayList.class, new Deserializer())
+                            .create();
+                    cells = gson.fromJson(resp, ArrayList.class);
+                } else {
+                    System.out.println("Сеть отсутствует");
 
-                String[] cells = {names.get(sex)[new RandomNumber(names.get(sex).length).get()],
-                        surnames.get(sex)[new RandomNumber(surnames.get(sex).length).get()],
-                        patronNames.get(sex)[new RandomNumber(patronNames.get(sex).length).get()],
-                        Long.toString(birthdate.getAge()),
-                        sex,
-                        birthdate.get(),
-                        new ITNGenerator(77).getString(),
-                        new RandomNumber(100000, 200001).getString(),
-                        countries[new RandomNumber(countries.length).get()],
-                        districts[new RandomNumber(districts.length).get()],
-                        cities[new RandomNumber(cities.length).get()],
-                        streets[new RandomNumber(streets.length).get()],
-                        new RandomNumber(1, 301).getString(),
-                        new RandomNumber(1, 1000).getString()};
+                    String sex = (i % 2 == 0) ? MALE : FEMALE;
+                    Birthdate birthdate = new Birthdate("dd-MM-yyyy");
+                    birthdate.generateBirthdate();
 
-                people.createRow(cells, 0);
+                    cells.add(names.get(sex)[new RandomNumber(names.get(sex).length).get()]);
+                    cells.add(surnames.get(sex)[new RandomNumber(surnames.get(sex).length).get()]);
+                    cells.add(patronNames.get(sex)[new RandomNumber(patronNames.get(sex).length).get()]);
+                    cells.add(Long.toString(birthdate.getAge()));
+                    cells.add(sex);
+                    cells.add(birthdate.get());
+                    cells.add(new ITNGenerator(77).getString());
+                    cells.add(new RandomNumber(100000, 200001).getString());
+                    cells.add(countries[new RandomNumber(countries.length).get()]);
+                    cells.add(districts[new RandomNumber(districts.length).get()]);
+                    cells.add(cities[new RandomNumber(cities.length).get()]);
+                    cells.add(streets[new RandomNumber(streets.length).get()]);
+                    cells.add(new RandomNumber(1, 301).getString());
+                    cells.add(new RandomNumber(1, 1000).getString());
+
+                }
+
             }
+
+            people.createRow(cells, 0);
 
             File filename = new File(OUTPUT_PATH + "Люди.xls");
             FileOutputStream fileOut = new FileOutputStream(filename);
@@ -75,8 +107,8 @@ class GeneratePeople {
             people.close();
             System.out.println("Файл создан. Путь: " + filename.getAbsolutePath());
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

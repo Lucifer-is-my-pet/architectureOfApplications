@@ -34,6 +34,15 @@ class HSSFWorkbookGenerator {
         }
     }
 
+    void createRow(ArrayList<String> cells, int sheetNumber) {
+        HSSFRow row = this.sheets.get(sheetNumber).createRow((short)this.rowsCount);
+        this.rowsCount += 1;
+
+        for (int i = 0; i < cells.size(); i++) {
+            row.createCell(i).setCellValue(cells.get(i));
+        }
+    }
+
     void write(OutputStream stream) throws IOException {
         workbook.write(stream);
     }

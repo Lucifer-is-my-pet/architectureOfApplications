@@ -3,11 +3,13 @@ package main.modules;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
 /*
@@ -20,7 +22,13 @@ class Birthdate {
 
     Birthdate(String pattern) {
         this.pattern = pattern;
+    }
 
+    String get() {
+        return this.birthdate;
+    }
+
+    void generateBirthdate() {
         DateFormat dateFormat = new SimpleDateFormat(this.pattern);
         GregorianCalendar birthday = new GregorianCalendar();
 
@@ -33,12 +41,14 @@ class Birthdate {
         this.birthdate = dateFormat.format(birthday.getTime());
     }
 
-    String get() {
-        return this.birthdate;
-    }
-
     void setBirthdate(String birthdate) {
         this.birthdate = birthdate;
+    }
+
+    String getFormattedBirthdate(String birthdate, String pattern) {
+        LocalDate localBirthDate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern(pattern));
+
+        return DateTimeFormatter.ofPattern(this.pattern, Locale.ENGLISH).format(localBirthDate);
     }
 
     long getAge() {

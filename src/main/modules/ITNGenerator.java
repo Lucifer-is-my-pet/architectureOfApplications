@@ -41,11 +41,11 @@ class ITNGenerator {
     }
 
     String getString() {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (int digit : this.ITN) {
-            result += digit;
+            result.append(digit);
         }
-        return result;
+        return result.toString();
     }
 
     private int calculateN(int[] digitArray) {

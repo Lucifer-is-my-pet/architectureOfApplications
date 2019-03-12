@@ -1,48 +1,46 @@
 package main.modules;
 
-import com.google.common.collect.ImmutableMap;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class Person {
 
-    private String name; // first
-    private String surname; // last
+    private String name;
+    private String surname;
     private String patronymicName;
-    private int age;
-    private Gender gender;
-    private String birthdate; // date
+    private String age;
+    private String gender;
+    private String birthdate;
     private String ITN;
-    private String postalIndex;
+    private String postcode;
     private String country;
     private String region;
     private String city;
     private String street;
-    private int house;
+    private String house;
     private String flat;
 
-    private Map<String, String> countries = new HashMap<String, String>() {{
+    private final Map<String, String> countries = new HashMap<String, String>() {{
         put("AU", "Австралия");
-            put("BR", "Бразилия");
-            put("CA", "Канада");
-            put("CH", "Швейцария");
-            put("DE", "Германия");
-            put("DK", "Дания");
-            put("ES", "Испания");
-            put("FI", "Финляндия");
-            put("FR", "Франция");
-            put("GB", "Великобритания");
-            put("IE", "Ирландия");
-            put("IR", "Иран");
-            put("NO", "Норвегия");
-            put("NL", "Нидерланды");
-            put("NZ", "Новая Зеландия");
-            put("TR", "Турция");
-            put("US", "США");
+        put("BR", "Бразилия");
+        put("CA", "Канада");
+        put("CH", "Швейцария");
+        put("DE", "Германия");
+        put("DK", "Дания");
+        put("ES", "Испания");
+        put("FI", "Финляндия");
+        put("FR", "Франция");
+        put("GB", "Великобритания");
+        put("IE", "Ирландия");
+        put("IR", "Иран");
+        put("NO", "Норвегия");
+        put("NL", "Нидерланды");
+        put("NZ", "Новая Зеландия");
+        put("TR", "Турция");
+        put("US", "США");
     }};
 
-    Person(String name, String surname, String patonName, int age, Gender gender, String birthdate, String ITN, String[] address, int house, String flat) {
+    Person(String name, String surname, String patonName, String age, String gender, String birthdate, String ITN, String[] address, String house, String flat) {
         this.name = name;
         this.surname = surname;
         this.patronymicName = patonName;
@@ -50,7 +48,7 @@ public class Person {
         this.gender = gender;
         this.birthdate = birthdate;
         this.ITN = ITN;
-        this.postalIndex = address[0];
+        this.postcode = address[0];
         this.country = address[1];
         this.region = address[2];
         this.city = address[3];
@@ -59,25 +57,66 @@ public class Person {
         this.flat = flat;
     }
 
-    Person(String name, String surname, int age, Gender gender, String birthdate, String[] address, int house) {
-        this.name = name;
-        this.surname = surname;
+    Person() {
         this.patronymicName = "";
-        this.age = age;
-        this.gender = gender;
-        this.birthdate = birthdate;
-        this.ITN = "";
-        this.postalIndex = address[0];
-        this.country = address[1];
-        this.region = address[2];
-        this.city = address[3];
-        this.street = address[4];
-        this.house = house;
-        this.flat = "";
+        this.flat = new RandomNumber(1, 1000).getString();
     }
-}
 
-enum Gender {
-    MALE,
-    FEMALE
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setPatronymicName(String patronymicName) {
+        this.patronymicName = patronymicName;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void setBirthdate(String birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public void setITN(String ITN) {
+        this.ITN = ITN;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
+
+    public void setCountry(String country, boolean isCode) {
+        if (isCode) {
+            this.country = this.countries.get(country);
+        } else {
+            this.country = country;
+        }
+
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public void setHouse(String house) {
+        this.house = house;
+    }
+
 }

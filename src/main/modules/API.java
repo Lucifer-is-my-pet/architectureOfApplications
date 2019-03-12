@@ -5,8 +5,6 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
-//import org.json.JSONArray;
-//import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,7 +30,7 @@ public class API {
 
         request = request.queryString(additionalParam, "");
 
-        System.out.println(request.getUrl());
+//        System.out.println(request.getUrl());
 
         try {
             jsonResponse = request.asString(); // https://github.com/Kong/unirest-java/issues/198#issuecomment-297657504 зависимости
