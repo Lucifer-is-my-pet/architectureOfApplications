@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Deserializer implements JsonDeserializer<ArrayList> {
@@ -33,7 +32,7 @@ public class Deserializer implements JsonDeserializer<ArrayList> {
     private String getStreet(String streetAndNumber) {
         if (Pattern.matches(".*\\d.*", streetAndNumber)) {
             String[] splitted = streetAndNumber.split("\\d+");
-            return String.trim(StringUtils.join(splitted));
+            return StringUtils.join(splitted).trim();
         } else {
             return streetAndNumber;
         }
