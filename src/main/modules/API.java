@@ -1,13 +1,10 @@
 package main.modules;
 
 import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +12,7 @@ public class API {
 
     private String url;
 
-    API(String url) throws MalformedURLException {
+    API(String url) {
         this.url = url;
     }
 

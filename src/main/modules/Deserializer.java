@@ -29,39 +29,14 @@ public class Deserializer implements JsonDeserializer<ArrayList> {
         put("US", "США");
     }};
 
-    private String getStreet(String streetAndNumber) {
-        if (Pattern.matches(".*\\d.*", streetAndNumber)) {
-            String[] splitted = streetAndNumber.split("\\d+");
+    private String getWords(String wordsAndDigits) {
+        if (Pattern.matches(".*\\d.*", wordsAndDigits)) {
+            String[] splitted = wordsAndDigits.split("\\d+");
             return StringUtils.join(splitted).trim();
         } else {
-            return streetAndNumber;
+            return wordsAndDigits;
         }
     }
-
-//    @Override
-//    public Person deserialize(JsonElement json, Type typeofT, JsonDeserializationContext context) throws JsonParseException {
-//        JsonObject jsonObject = json.getAsJsonObject();
-//
-//        Person person = new Person();
-//        person.setName(jsonObject.get("name").getAsJsonObject().get("first").getAsString());
-//        person.setSurname(jsonObject.get("name").getAsJsonObject().get("last").getAsString());
-//        person.setAge(jsonObject.get("dob").getAsJsonObject().get("age").getAsString());
-//        person.setGender(jsonObject.get("gender").getAsString());
-//
-//        Birthdate bd = new Birthdate("dd-MM-yyy");
-//        String actualBd = jsonObject.get("dob").getAsJsonObject().get("date").getAsString().split("T")[0];
-//        person.setBirthdate(bd.getFormattedBirthdate(actualBd, "yyyy-MM-dd"));
-//
-//        person.setITN(jsonObject.get("id").getAsJsonObject().get("value").getAsString()); // ???
-//        person.setPostcode(jsonObject.get("location").getAsJsonObject().get("postcode").getAsString());
-//        person.setCountry(jsonObject.get("nat").getAsString(), true);
-//        person.setRegion(jsonObject.get("location").getAsJsonObject().get("state").getAsString());
-//        person.setCity(jsonObject.get("location").getAsJsonObject().get("city").getAsString());
-//        person.setStreet(jsonObject.get("location").getAsJsonObject().get("street").getAsString().split("\\d+ ")[1]); // улицы вида '4456 frederick ave'
-//        person.setHouse(jsonObject.get("location").getAsJsonObject().get("street").getAsString().split(" ")[0]);
-//
-//        return person;
-//    }
 
     @Override
     public ArrayList<String> deserialize(JsonElement json, Type typeofT, JsonDeserializationContext context) throws JsonParseException {
@@ -74,27 +49,25 @@ public class Deserializer implements JsonDeserializer<ArrayList> {
         result.add(jsonObject.get("dob").getAsJsonObject().get("age").getAsString());
         result.add(StringUtils.capitalize(jsonObject.get("gender").getAsString()));
 
-        Birthdate bd = new Birthdate("dd-MM-yyy");
+        Birthdate bd = new Birthdate("dd-MM-yyy"); // конвертируем в требуемый формат
         String actualBd = jsonObject.get("dob").getAsJsonObject().get("date").getAsString().split("T")[0];
         result.add(bd.getFormattedBirthdate(actualBd, "yyyy-MM-dd"));
 
 //        System.out.println(jsonObject.get("id"));
 //        System.out.println(jsonObject.get("location"));
 
-        if (jsonObject.get("id").getAsJsonObject().get("value").isJsonNull()) {
+        if (jsonObject.get("id").getAsJsonObject().get("value").isJsonNull()) { // вместо ИНН
             result.add("");
         } else {
-            result.add(jsonObject.get("id").getAsJsonObject().get("value").getAsString()); //??
+            result.add(jsonObject.get("id").getAsJsonObject().get("value").getAsString());
         }
 
         result.add(jsonObject.get("location").getAsJsonObject().get("postcode").getAsString());
         result.add(this.countries.get(jsonObject.get("nat").getAsString()));
         result.add(StringUtils.capitalize(jsonObject.get("location").getAsJsonObject().get("state").getAsString()));
         result.add(StringUtils.capitalize(jsonObject.get("location").getAsJsonObject().get("city").getAsString()));
-        result.add(StringUtils.capitalize(getStreet(jsonObject.get("location").getAsJsonObject().get("street").getAsString())));
+        result.add(StringUtils.capitalize(getWords(jsonObject.get("location").getAsJsonObject().get("street").getAsString())));
         result.add(jsonObject.get("location").getAsJsonObject().get("street").getAsString().split(" ")[0]);
-        result.add(new RandomNumber(1, 1000).getString()); // ??
-
         return result;
     }
 

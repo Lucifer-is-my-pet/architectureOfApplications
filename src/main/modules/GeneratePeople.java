@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 
 import java.io.*;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.*;
 
 
@@ -14,10 +13,8 @@ class GeneratePeople {
     public static void main(String[] args) {
         final String MALE = "Муж";
         final String FEMALE = "Жен";
-        // "C:\\Users\\guralnik\\Documents\\GitHub\\architectureOfApplications\\src\\main\\resources\\"
         final String RESOURCES_PATH = new StringBuilder().append(".").append(File.separator).append("src")
                 .append(File.separator).append("main").append(File.separator).append("resources").append(File.separator).toString();
-        // "C:\\Users\\guralnik\\Documents\\GitHub\\architectureOfApplications\\src\\main\\output\\"
         final String OUTPUT_PATH = new StringBuilder().append("src").append(File.separator).append("main")
                 .append(File.separator).append("output").append(File.separator).toString();
 
@@ -72,8 +69,9 @@ class GeneratePeople {
                             .registerTypeAdapter(ArrayList.class, new Deserializer())
                             .create();
                     cells = gson.fromJson(resp, ArrayList.class);
+                    cells.add(new RandomNumber(1, 1000).getString()); // в данных нет квартир
                 } else {
-                    System.out.println("Сеть отсутствует");
+                    System.out.println("Сеть отсутствует, генерирую из файлов");
 
                     String sex = (i % 2 == 0) ? MALE : FEMALE;
                     Birthdate birthdate = new Birthdate("dd-MM-yyyy");
@@ -95,10 +93,8 @@ class GeneratePeople {
                     cells.add(new RandomNumber(1, 1000).getString());
 
                 }
-
+                people.createRow(cells, 0);
             }
-
-            people.createRow(cells, 0);
 
             File filename = new File(OUTPUT_PATH + "Люди.xls");
             FileOutputStream fileOut = new FileOutputStream(filename);
