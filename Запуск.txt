@@ -1,0 +1,5 @@
+﻿0. В PATH должен быть прописан путь к папке bin пакета SDK или JDK
+1. Открыть консоль
+2. Перейти в каталог modules
+3. Выполнить javac GeneratePeople.java
+4. Выполнить java -classpath . GeneratePeople
