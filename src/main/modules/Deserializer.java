@@ -53,15 +53,7 @@ public class Deserializer implements JsonDeserializer<ArrayList> {
         String actualBd = jsonObject.get("dob").getAsJsonObject().get("date").getAsString().split("T")[0];
         result.add(bd.getFormattedBirthdate(actualBd, "yyyy-MM-dd"));
 
-//        System.out.println(jsonObject.get("id"));
-//        System.out.println(jsonObject.get("location"));
-
-        if (jsonObject.get("id").getAsJsonObject().get("value").isJsonNull()) { // вместо ИНН
-            result.add("");
-        } else {
-            result.add(jsonObject.get("id").getAsJsonObject().get("value").getAsString());
-        }
-
+        result.add(""); // ИНН
         result.add(jsonObject.get("location").getAsJsonObject().get("postcode").getAsString());
         result.add(this.countries.get(jsonObject.get("nat").getAsString()));
         result.add(StringUtils.capitalize(jsonObject.get("location").getAsJsonObject().get("state").getAsString()));

@@ -9,23 +9,22 @@ import java.util.*;
 
 
 class GeneratePeople {
+    final static String MALE = "Муж";
+    final static String FEMALE = "Жен";
+    final static String RESOURCES_PATH = new StringBuilder().append(".").append(File.separator).append("src")
+            .append(File.separator).append("main").append(File.separator).append("resources").append(File.separator).toString();
+    final static String OUTPUT_PATH = new StringBuilder().append("src").append(File.separator).append("main")
+            .append(File.separator).append("output").append(File.separator).toString();
+    
+    static String[] countries = null;
+    static String[] districts = null;
+    static String[] cities = null;
+    static String[] streets = null;
+    static Map<String, String[]> names = new HashMap<>();
+    static Map<String, String[]> surnames = new HashMap<>();
+    static Map<String, String[]> patronNames = new HashMap<>();
 
     public static void main(String[] args) {
-        final String MALE = "Муж";
-        final String FEMALE = "Жен";
-        final String RESOURCES_PATH = new StringBuilder().append(".").append(File.separator).append("src")
-                .append(File.separator).append("main").append(File.separator).append("resources").append(File.separator).toString();
-        final String OUTPUT_PATH = new StringBuilder().append("src").append(File.separator).append("main")
-                .append(File.separator).append("output").append(File.separator).toString();
-
-        String[] countries = null;
-        String[] districts = null;
-        String[] cities = null;
-        String[] streets = null;
-        Map<String, String[]> names = new HashMap<>();
-        Map<String, String[]> surnames = new HashMap<>();
-        Map<String, String[]> patronNames = new HashMap<>();
-
         FileReaderToArray readerToArray = new FileReaderToArray();
 
         try {
@@ -46,14 +45,12 @@ class GeneratePeople {
         String[] sheetsNames = {"Люди"};
         String[] columnNames = {"Имя", "Фамилия", "Отчество", "Возраст", "Пол", "Дата рождения", "ИНН",
                 "Почтовый индекс", "Страна", "Область", "Город", "Улица", "Дом", "Квартира"};
-
+        ArrayList<String> cells = new ArrayList<>();
         int rowsCount = new RandomNumber(1, 31).get();
 
         HashMap<String, String> params = new HashMap<String, String>() {{
-            put("inc", "gender,name,location,nat,dob,id");
+            put("inc", "gender,name,location,nat,dob"); // будем запрашивать с ресурса пол, ФИО, локацию, национальность, дату рождения
         }};
-
-        ArrayList<String> cells = new ArrayList<>();
 
         try {
             HSSFWorkbookGenerator people = new HSSFWorkbookGenerator(sheetsNames);
@@ -68,7 +65,9 @@ class GeneratePeople {
                             .setPrettyPrinting()
                             .registerTypeAdapter(ArrayList.class, new Deserializer())
                             .create();
+                    
                     cells = gson.fromJson(resp, ArrayList.class);
+                    cells.set(6, new ITNGenerator(77).getString());
                     cells.add(new RandomNumber(1, 1000).getString()); // в данных нет квартир
                 } else {
                     System.out.println("Сеть отсутствует, генерирую из файлов");
