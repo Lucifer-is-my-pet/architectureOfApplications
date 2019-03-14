@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class Deserializer implements JsonDeserializer<ArrayList> {
 
-    private final Map<String, String> countries = new HashMap<String, String>() {{
+    private final Map<String, String> COUNTRIES = new HashMap<String, String>() {{
         put("AU", "Австралия");
         put("BR", "Бразилия");
         put("CA", "Канада");
@@ -29,13 +29,18 @@ public class Deserializer implements JsonDeserializer<ArrayList> {
         put("US", "США");
     }};
 
+    private boolean hasDigits(String string) {
+        return Pattern.matches(".*\\d.*", string);
+    }
+
     private String getWords(String wordsAndDigits) {
-        if (Pattern.matches(".*\\d.*", wordsAndDigits)) {
-            String[] splitted = wordsAndDigits.split("\\d+");
-            return StringUtils.join(splitted).trim();
-        } else {
-            return wordsAndDigits;
-        }
+        String[] splitted = wordsAndDigits.split("\\d+");
+        return StringUtils.join(splitted).trim();
+    }
+
+    private String getDigits(String wordsAndDigits) {
+        String[] splitted = wordsAndDigits.split("\\D+");
+        return StringUtils.join(splitted).trim();
     }
 
     @Override
@@ -45,7 +50,12 @@ public class Deserializer implements JsonDeserializer<ArrayList> {
 
         result.add(StringUtils.capitalize(jsonObject.get("name").getAsJsonObject().get("first").getAsString()));
         result.add(StringUtils.capitalize(jsonObject.get("name").getAsJsonObject().get("last").getAsString()));
-        result.add("");
+
+        if (jsonObject.has("middle")) {
+            result.add(StringUtils.capitalize(jsonObject.get("name").getAsJsonObject().get("middle").getAsString()));
+        } else {
+            result.add("-");
+        }
         result.add(jsonObject.get("dob").getAsJsonObject().get("age").getAsString());
         result.add(StringUtils.capitalize(jsonObject.get("gender").getAsString()));
 
@@ -55,12 +65,20 @@ public class Deserializer implements JsonDeserializer<ArrayList> {
 
         result.add(""); // ИНН
         result.add(jsonObject.get("location").getAsJsonObject().get("postcode").getAsString());
-        result.add(this.countries.get(jsonObject.get("nat").getAsString()));
+        result.add(this.COUNTRIES.get(jsonObject.get("nat").getAsString()));
         result.add(StringUtils.capitalize(jsonObject.get("location").getAsJsonObject().get("state").getAsString()));
         result.add(StringUtils.capitalize(jsonObject.get("location").getAsJsonObject().get("city").getAsString()));
-        result.add(StringUtils.capitalize(getWords(jsonObject.get("location").getAsJsonObject().get("street").getAsString())));
-        result.add(jsonObject.get("location").getAsJsonObject().get("street").getAsString().split(" ")[0]);
+
+        String street = jsonObject.get("location").getAsJsonObject().get("street").getAsString();
+
+        if (hasDigits(street)) {
+            result.add(StringUtils.capitalize(getWords(street)));
+            result.add(StringUtils.capitalize(getDigits(street)));
+        } else {
+            result.add(StringUtils.capitalize(street));
+            result.add("-");
+        }
+
         return result;
     }
-
 }
