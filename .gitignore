@@ -21,3 +21,19 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+.idea/encodings.xml
+.idea/libs.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+src/main/output/production/architectureOfApplications/main/resources/Cities.txt
+src/main/output/production/architectureOfApplications/main/resources/Countries.txt
+src/main/output/production/architectureOfApplications/main/resources/Districts.txt
+src/main/output/production/architectureOfApplications/main/resources/Names_f.txt
+src/main/output/production/architectureOfApplications/main/resources/Names_m.txt
+src/main/output/production/architectureOfApplications/main/resources/Patronymic_f.txt
+src/main/output/production/architectureOfApplications/main/resources/Patronymic_m.txt
+src/main/output/production/architectureOfApplications/main/resources/Streets.txt
+src/main/output/production/architectureOfApplications/main/resources/Surnames_f.txt
+src/main/output/production/architectureOfApplications/main/resources/Surnames_m.txt
