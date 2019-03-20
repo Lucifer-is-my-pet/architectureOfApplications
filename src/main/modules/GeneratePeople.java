@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.SQLException;
 import java.util.*;
 
 
@@ -35,6 +36,7 @@ class GeneratePeople {
 
     public static void main(String[] args) {
         FileReaderToArray readerToArray = new FileReaderToArray();
+        JDBC jdbc = new JDBC();
 
         try {
             countries = readerToArray.readLines(RESOURCES_PATH + "Countries.txt");
@@ -56,6 +58,26 @@ class GeneratePeople {
         HSSFWorkbookGenerator people = new HSSFWorkbookGenerator(SHEETS_NAMES);
         people.createRow(COLUMNS_NAMES, 0); // заголовки
 
+        try {
+            jdbc.executeCommands(jdbc.establishConnection(""), "CREATE DATABASE fintech;");
+            jdbc.executeCommands(jdbc.establishConnection(""), "CREATE USER 'user1'@'localhost' IDENTIFIED BY 'password';");
+            jdbc.executeCommands(jdbc.establishConnection(""), "GRANT ALL PRIVILEGES ON fintech.* TO 'user1'@'localhost';");
+            jdbc.executeCommands(jdbc.establishConnection(""), "USE fintech;");
+            jdbc.executeCommands(jdbc.establishConnection(""),
+                    "CREATE TABLE address ( id int auto_increment not null, postcode varchar(256), " +
+                            "country varchar(256), region varchar(256), city varchar(256), street varchar(256), " +
+                            "house int, flat int, primary key (id) );");
+            jdbc.executeCommands(jdbc.establishConnection(""),
+                    "CREATE TABLE persons ( id int auto_increment not null, surname varchar(256), " +
+                            "name varchar(256), middlename varchar(256), birthday date, gender varchar(1), " +
+                            "inn varchar(12), address_id int not null, " +
+                            "foreign key (address_id) references address(id), primary key (id) );");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         for (int i = 1; i < rowsCount + 1; i++) {
             ArrayList<String> cells = new ArrayList<>();
             try {
@@ -70,6 +92,12 @@ class GeneratePeople {
                 cells.set(4, (cells.get(4).equals("Male")) ? MALE : FEMALE);
                 cells.set(6, new ITNGenerator(77).getString());
                 cells.add(new RandomNumber(1, 1000).getString()); // в данных нет квартир
+
+                jdbc.executeCommands(jdbc.establishConnection(""), "INSERT INTO address (postcode, country, region, city, street, house, flat) " +
+                        "VALUES (" + cells.get(7) + ", " + cells.get(8) + ", " + cells.get(9) + ", " + cells.get(10) + ", " + cells.get(11) + ", " + cells.get(12) + ", " + cells.get(13));
+
+                jdbc.executeCommands(jdbc.establishConnection(""), "INSERT INTO persons (surname, name, middlename, birthday, gender, inn, address_id) " +
+                        "VALUES (");
             } catch (UnknownHostException ex) {
                 System.out.println("Сеть отсутствует, генерирую из файлов строку номер " + (i + 1));
 //                cells.clear();
@@ -92,6 +120,10 @@ class GeneratePeople {
                 cells.add(streets[new RandomNumber(streets.length).get()]);
                 cells.add(new RandomNumber(1, 301).getString());
                 cells.add(new RandomNumber(1, 1000).getString());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
             people.createRow(cells, 0);
         }
