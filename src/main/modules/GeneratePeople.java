@@ -29,6 +29,12 @@ class GeneratePeople {
     private final static String[] SHEETS_NAMES = {"Люди"};
     private final static String[] COLUMNS_NAMES = {"Имя", "Фамилия", "Отчество/Среднее имя", "Возраст", "Пол", "Дата рождения", "ИНН",
             "Почтовый индекс", "Страна", "Область", "Город", "Улица", "Дом", "Квартира"};
+    private final static String SQL_ADDRESS_COLUMNS = "id int auto_increment not null, postcode varchar(256), " +
+            "country varchar(256), region varchar(256), city varchar(256), street varchar(256), " +
+            "house int, flat int, primary key (id)";
+    private final static String SQL_PERSONS_COLUMNS = "id int auto_increment not null, surname varchar(256), " +
+            "name varchar(256), middlename varchar(256), birthday date, gender varchar(1), " +
+            "inn varchar(12), address_id int not null, foreign key (address_id) references address(id), primary key (id)";
 
     private final static HashMap<String, String> API_PARAMS = new HashMap<String, String>() {{
         put("inc", "gender,name,location,nat,dob"); // будем запрашивать с ресурса пол, ФИО, локацию, национальность, дату рождения
@@ -58,15 +64,8 @@ class GeneratePeople {
         jdbc.executeCommands("", "CREATE USER 'user1'@'localhost' IDENTIFIED BY 'password';");
         jdbc.executeCommands("", "GRANT ALL PRIVILEGES ON fintech.* TO 'user1'@'localhost';");
         jdbc.executeCommands("", "USE fintech;");
-        jdbc.executeCommands("",
-                "CREATE TABLE address ( id int auto_increment not null, postcode varchar(256), " +
-                        "country varchar(256), region varchar(256), city varchar(256), street varchar(256), " +
-                        "house int, flat int, primary key (id) );");
-        jdbc.executeCommands("",
-                "CREATE TABLE persons ( id int auto_increment not null, surname varchar(256), " +
-                        "name varchar(256), middlename varchar(256), birthday date, gender varchar(1), " +
-                        "inn varchar(12), address_id int not null, " +
-                        "foreign key (address_id) references address(id), primary key (id) );");
+        jdbc.executeCommands("", "CREATE TABLE address (" + SQL_ADDRESS_COLUMNS + ");");
+        jdbc.executeCommands("", "CREATE TABLE persons (" + SQL_PERSONS_COLUMNS + ");");
 
         for (int i = 1; i < rowsCount + 1; i++) {
             ArrayList<String> cells = new ArrayList<>();
@@ -91,7 +90,7 @@ class GeneratePeople {
                     e.printStackTrace();
                 }
                 jdbc.insert("persons", new String[] {"surname", "name", "middlename", "birthday", "gender", "inn", "address_id"},
-                        new String[] {cells.get(1), cells.get(0), cells.get(2), cells.get(5), cells.get(4), cells.get(6)}); //todo
+                        new String[] {cells.get(1), cells.get(0), cells.get(2), cells.get(5), cells.get(4), cells.get(6), lastTd});
             } catch (UnknownHostException ex) {
                 System.out.println("Сеть отсутствует, генерирую из файлов строку номер " + (i + 1));
 //                cells.clear();
