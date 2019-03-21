@@ -38,45 +38,35 @@ class GeneratePeople {
         FileReaderToArray readerToArray = new FileReaderToArray();
         JDBC jdbc = new JDBC();
 
-        try {
-            countries = readerToArray.readLines(RESOURCES_PATH + "Countries.txt");
-            districts = readerToArray.readLines(RESOURCES_PATH + "Districts.txt");
-            cities = readerToArray.readLines(RESOURCES_PATH + "Cities.txt");
-            streets = readerToArray.readLines(RESOURCES_PATH + "Streets.txt");
-            names.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Names_m.txt"));
-            names.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Names_f.txt"));
-            surnames.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Surnames_m.txt"));
-            surnames.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Surnames_f.txt"));
-            patronNames.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_m.txt"));
-            patronNames.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_f.txt"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        countries = readerToArray.readLines(RESOURCES_PATH + "Countries.txt");
+        districts = readerToArray.readLines(RESOURCES_PATH + "Districts.txt");
+        cities = readerToArray.readLines(RESOURCES_PATH + "Cities.txt");
+        streets = readerToArray.readLines(RESOURCES_PATH + "Streets.txt");
+        names.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Names_m.txt"));
+        names.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Names_f.txt"));
+        surnames.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Surnames_m.txt"));
+        surnames.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Surnames_f.txt"));
+        patronNames.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_m.txt"));
+        patronNames.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_f.txt"));
 
         int rowsCount = new RandomNumber(1, 31).get();
 
         HSSFWorkbookGenerator people = new HSSFWorkbookGenerator(SHEETS_NAMES);
         people.createRow(COLUMNS_NAMES, 0); // заголовки
 
-        try {
-            jdbc.executeCommands(jdbc.establishConnection(""), "CREATE DATABASE fintech;");
-            jdbc.executeCommands(jdbc.establishConnection(""), "CREATE USER 'user1'@'localhost' IDENTIFIED BY 'password';");
-            jdbc.executeCommands(jdbc.establishConnection(""), "GRANT ALL PRIVILEGES ON fintech.* TO 'user1'@'localhost';");
-            jdbc.executeCommands(jdbc.establishConnection(""), "USE fintech;");
-            jdbc.executeCommands(jdbc.establishConnection(""),
-                    "CREATE TABLE address ( id int auto_increment not null, postcode varchar(256), " +
-                            "country varchar(256), region varchar(256), city varchar(256), street varchar(256), " +
-                            "house int, flat int, primary key (id) );");
-            jdbc.executeCommands(jdbc.establishConnection(""),
-                    "CREATE TABLE persons ( id int auto_increment not null, surname varchar(256), " +
-                            "name varchar(256), middlename varchar(256), birthday date, gender varchar(1), " +
-                            "inn varchar(12), address_id int not null, " +
-                            "foreign key (address_id) references address(id), primary key (id) );");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        jdbc.executeCommands("", "CREATE DATABASE fintech;");
+        jdbc.executeCommands("", "CREATE USER 'user1'@'localhost' IDENTIFIED BY 'password';");
+        jdbc.executeCommands("", "GRANT ALL PRIVILEGES ON fintech.* TO 'user1'@'localhost';");
+        jdbc.executeCommands("", "USE fintech;");
+        jdbc.executeCommands("",
+                "CREATE TABLE address ( id int auto_increment not null, postcode varchar(256), " +
+                        "country varchar(256), region varchar(256), city varchar(256), street varchar(256), " +
+                        "house int, flat int, primary key (id) );");
+        jdbc.executeCommands("",
+                "CREATE TABLE persons ( id int auto_increment not null, surname varchar(256), " +
+                        "name varchar(256), middlename varchar(256), birthday date, gender varchar(1), " +
+                        "inn varchar(12), address_id int not null, " +
+                        "foreign key (address_id) references address(id), primary key (id) );");
 
         for (int i = 1; i < rowsCount + 1; i++) {
             ArrayList<String> cells = new ArrayList<>();
@@ -93,11 +83,15 @@ class GeneratePeople {
                 cells.set(6, new ITNGenerator(77).getString());
                 cells.add(new RandomNumber(1, 1000).getString()); // в данных нет квартир
 
-                jdbc.executeCommands(jdbc.establishConnection(""), "INSERT INTO address (postcode, country, region, city, street, house, flat) " +
-                        "VALUES (" + cells.get(7) + ", " + cells.get(8) + ", " + cells.get(9) + ", " + cells.get(10) + ", " + cells.get(11) + ", " + cells.get(12) + ", " + cells.get(13));
-
-                jdbc.executeCommands(jdbc.establishConnection(""), "INSERT INTO persons (surname, name, middlename, birthday, gender, inn, address_id) " +
-                        "VALUES (");
+                String lastTd = "0";
+                try {
+                    lastTd = Integer.toString(jdbc.insert("address", new String[] {"postcode", "country", "region", "city", "street", "house", "flat"},
+                            (String[]) Arrays.copyOfRange(cells.toArray(), 7, cells.size())).getInt("id"));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                jdbc.insert("persons", new String[] {"surname", "name", "middlename", "birthday", "gender", "inn", "address_id"},
+                        new String[] {cells.get(1), cells.get(0), cells.get(2), cells.get(5), cells.get(4), cells.get(6)}); //todo
             } catch (UnknownHostException ex) {
                 System.out.println("Сеть отсутствует, генерирую из файлов строку номер " + (i + 1));
 //                cells.clear();
@@ -120,10 +114,6 @@ class GeneratePeople {
                 cells.add(streets[new RandomNumber(streets.length).get()]);
                 cells.add(new RandomNumber(1, 301).getString());
                 cells.add(new RandomNumber(1, 1000).getString());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
             }
             people.createRow(cells, 0);
         }
@@ -137,6 +127,8 @@ class GeneratePeople {
             System.out.println("Файл создан. Путь: " + filename.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+
         }
     }
 }

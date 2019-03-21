@@ -1,9 +1,8 @@
 package main.modules;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import org.junit.jupiter.api.DisplayName;
+
+import java.sql.*;
 import java.util.ArrayList;
 
 public class JDBC {
@@ -13,9 +12,12 @@ public class JDBC {
             PASS = "password",
             dbURL = "jdbc:mysql://localhost/";
 
-    void executeCommands(Statement statement, String... commands) {
-        try /*(Connection conn = DriverManager.getConnection(dbURL + dbName, USER, PASS);
-             Statement statement = conn.createStatement())*/ {
+    /*
+     * Для различных команд
+     * */
+    void executeCommands(String dbName, String... commands) {
+        try (Connection conn = DriverManager.getConnection(dbURL + dbName, USER, PASS);
+             Statement statement = conn.createStatement()) {
 
             for (String command : commands) {
                 statement.execute(command);
@@ -23,38 +25,45 @@ public class JDBC {
         } catch (SQLException e) {
             System.out.println("Проблемы с запросом/соединением");
             e.printStackTrace();
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-                if (statement.getConnection() != null) {
-                    statement.getConnection().close();
-                }
-            } catch (SQLException se) {
-            }
         }
     }
 
-    Statement establishConnection(String dbName) throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection conn = DriverManager.getConnection(dbURL + dbName, USER, PASS);
-        return conn.createStatement();
-    }
-
-    public void insert(String dbName, ArrayList<String> coloumns, ArrayList<String> values) {
-        if (coloumns.size() != values.size()) {
-            throw new ArrayIndexOutOfBoundsException("Количество столбцов не равно количеству значений");
-        }
-        Statement statement = null;
-        try {
-            establishConnection(dbURL + dbName);
-            statement.executeUpdate("CREATE DATABASE " + dbName);
+    /*
+     * Если нужен результат запроса
+     * */
+    ResultSet executeQuery(String dbName, String command) {
+        ResultSet resultSet = null;
+        try (Connection conn = DriverManager.getConnection(dbURL + dbName, USER, PASS);
+             Statement statement = conn.createStatement()) {
+            resultSet = statement.executeQuery(command);
         } catch (SQLException e) {
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("Проблемы с драйвером");
+            System.out.println("Проблемы с запросом/соединением");
             e.printStackTrace();
         }
+
+        return resultSet;
+    }
+
+    public ResultSet insert(String dbName, String[] coloumns, String[] values) {
+        if (coloumns.length != values.length) {
+            throw new ArrayIndexOutOfBoundsException("Количество столбцов не равно количеству значений");
+        }
+        StringBuilder query = new StringBuilder().append("INSERT INTO ").append(dbName).append(" (");
+        try (Connection conn = DriverManager.getConnection(dbURL + dbName, USER, PASS);
+             Statement statement = conn.createStatement()) {
+            for (int i = 0; i < coloumns.length - 1; i++) {
+                query.append(coloumns[i]).append(", ");
+            }
+            query.append(") VALUES (");
+            for (int i = 0; i < values.length - 1; i++) {
+                query.append(values[i]).append(", ");
+            }
+            query.append(");");
+            statement.executeUpdate(query.toString(), Statement.RETURN_GENERATED_KEYS);
+            return statement.getGeneratedKeys();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
