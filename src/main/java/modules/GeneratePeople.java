@@ -1,4 +1,4 @@
-package main.modules;
+package modules;
 
 import java.io.*;
 import java.util.*;
@@ -41,12 +41,8 @@ class GeneratePeople {
         patronNames.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_f.txt"));
 
         try {
-            String[] sheetsNames = {"Люди"};
-            String[] columnNames = {"Имя", "Фамилия", "Отчество", "Возраст", "Пол", "Дата рождения", "ИНН",
-                    "Почтовый индекс", "Страна", "Область", "Город", "Улица", "Дом", "Квартира"};
-
-            HSSFWorkbookGenerator people = new HSSFWorkbookGenerator(sheetsNames);
-            people.createRow(columnNames, 0); // заголовки
+            HSSFWorkbookGenerator people = new HSSFWorkbookGenerator(SHEETS_NAMES);
+            people.createRow(COLUMNS_NAMES, 0); // заголовки
 
             int rowsCount = new RandomNumber(1, 31).get();
             for (int i = 1; i < rowsCount + 1; i++) {
