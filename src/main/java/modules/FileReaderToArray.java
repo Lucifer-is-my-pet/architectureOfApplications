@@ -10,16 +10,17 @@ class FileReaderToArray {
 
     FileReaderToArray() {}
 
-    String[] readLines(String filename) throws IOException {
-        FileReader fileReader = new FileReader(filename);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
+    String[] readLines(String filename) {
         List<String> lines = new ArrayList<String>();
-        String line = null;
-        while ((line = bufferedReader.readLine()) != null) {
-            lines.add(line);
+        String line;
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filename))) {
+            while ((line = bufferedReader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        bufferedReader.close();
-        fileReader.close();
         return lines.toArray(new String[lines.size()]);
     }
 }

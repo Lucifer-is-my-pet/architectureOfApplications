@@ -36,20 +36,16 @@ class GeneratePeople {
     public static void main(String[] args) {
         FileReaderToArray readerToArray = new FileReaderToArray();
 
-        try {
-            countries = readerToArray.readLines(RESOURCES_PATH + "Countries.txt");
-            districts = readerToArray.readLines(RESOURCES_PATH + "Districts.txt");
-            cities = readerToArray.readLines(RESOURCES_PATH + "Cities.txt");
-            streets = readerToArray.readLines(RESOURCES_PATH + "Streets.txt");
-            names.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Names_m.txt"));
-            names.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Names_f.txt"));
-            surnames.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Surnames_m.txt"));
-            surnames.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Surnames_f.txt"));
-            patronNames.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_m.txt"));
-            patronNames.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_f.txt"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        countries = readerToArray.readLines(RESOURCES_PATH + "Countries.txt");
+        districts = readerToArray.readLines(RESOURCES_PATH + "Districts.txt");
+        cities = readerToArray.readLines(RESOURCES_PATH + "Cities.txt");
+        streets = readerToArray.readLines(RESOURCES_PATH + "Streets.txt");
+        names.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Names_m.txt"));
+        names.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Names_f.txt"));
+        surnames.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Surnames_m.txt"));
+        surnames.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Surnames_f.txt"));
+        patronNames.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_m.txt"));
+        patronNames.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_f.txt"));
 
         int rowsCount = new RandomNumber(1, 31).get();
 
