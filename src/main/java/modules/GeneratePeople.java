@@ -1,4 +1,4 @@
-package main.modules;
+package modules;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

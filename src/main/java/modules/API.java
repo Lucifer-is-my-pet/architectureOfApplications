@@ -1,4 +1,4 @@
-package main.modules;
+package modules;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;

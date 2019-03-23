@@ -1,4 +1,4 @@
-package main.modules;
+package modules;
 
 import org.junit.jupiter.api.DisplayName;
 
