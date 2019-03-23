@@ -1,4 +1,4 @@
-package main.modules;
+package modules;
 
 import com.google.gson.*;
 import org.apache.commons.lang3.StringUtils;
