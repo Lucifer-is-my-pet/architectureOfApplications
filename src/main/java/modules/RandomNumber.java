@@ -1,31 +1,20 @@
-package modules;
+package main.java.modules;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 class RandomNumber {
 
-    private int randomNumber;
     private int start = 0;
 
-    RandomNumber(int start, int bound) {
-        this.start = start;
-
-        this.randomNumber = generateRandomNumber(bound);
+    RandomNumber() {
     }
 
-    RandomNumber(int bound) {
-        this.randomNumber = generateRandomNumber(bound);
-    }
-
-    private int generateRandomNumber(int bound) {
+    int generateWithoutStart(int bound) {
         return ThreadLocalRandom.current().nextInt(this.start, bound);
     }
 
-    int get() {
-        return this.randomNumber;
+    int generateWithStart(int start, int bound) {
+        return ThreadLocalRandom.current().nextInt(start, bound);
     }
 
-    String getString() {
-        return Integer.toString(this.randomNumber);
-    }
 }

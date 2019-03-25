@@ -1,4 +1,4 @@
-package modules;
+package main.java.modules;
 
 import java.io.*;
 import java.util.*;
@@ -25,7 +25,7 @@ class GeneratePeople {
     private final static String[] COLUMNS_NAMES = {"Имя", "Фамилия", "Отчество/Среднее имя", "Возраст", "Пол", "Дата рождения", "ИНН",
             "Почтовый индекс", "Страна", "Область", "Город", "Улица", "Дом", "Квартира"};
 
-    public static void main(String[]args) {
+    public static void main(String[] args) {
 
         FileReaderToArray readerToArray = new FileReaderToArray();
 
@@ -40,41 +40,43 @@ class GeneratePeople {
         patronNames.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_m.txt"));
         patronNames.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_f.txt"));
 
-        try {
-            HSSFWorkbookGenerator people = new HSSFWorkbookGenerator(SHEETS_NAMES);
-            people.createRow(COLUMNS_NAMES, 0); // заголовки
+        HSSFWorkbookGenerator people = new HSSFWorkbookGenerator(SHEETS_NAMES);
+        people.createRow(COLUMNS_NAMES, 0); // заголовки
 
-            int rowsCount = new RandomNumber(1, 31).get();
-            for (int i = 1; i < rowsCount + 1; i++) {
-                String sex = (i % 2 == 0) ? MALE : FEMALE;
-                Birthdate birthdate = new Birthdate("dd-MM-yyyy");
+        RandomNumber random = new RandomNumber();
 
-                String[] cells = {names.get(sex)[new RandomNumber(names.get(sex).length).get()],
-                        surnames.get(sex)[new RandomNumber(surnames.get(sex).length).get()],
-                        patronNames.get(sex)[new RandomNumber(patronNames.get(sex).length).get()],
-                        Long.toString(birthdate.getAge()),
-                        sex,
-                        birthdate.get(),
-                        new ITNGenerator(77).getString(),
-                        new RandomNumber(100000, 200001).getString(),
-                        countries[new RandomNumber(countries.length).get()],
-                        districts[new RandomNumber(districts.length).get()],
-                        cities[new RandomNumber(cities.length).get()],
-                        streets[new RandomNumber(streets.length).get()],
-                        new RandomNumber(1, 301).getString(),
-                        new RandomNumber(1, 1000).getString()};
+        int rowsCount = random.generateWithStart(1, 31) + 1;
+        for (int i = 1; i < rowsCount; i++) {
+            String sex = (i % 2 == 0) ? MALE : FEMALE;
+            Birthdate birthdate = new Birthdate("dd-MM-yyyy");
 
-                people.createRow(cells, 0);
-            }
+            String[] cells = {names.get(sex)[random.generateWithoutStart(names.get(sex).length)],
+                    surnames.get(sex)[random.generateWithoutStart(surnames.get(sex).length)],
+                    patronNames.get(sex)[random.generateWithoutStart(patronNames.get(sex).length)],
+                    Long.toString(birthdate.getAge()),
+                    sex,
+                    birthdate.get(),
+                    new ITNGenerator(77).getString(),
+                    Integer.toString(random.generateWithStart(100000, 200001)),
+                    countries[random.generateWithoutStart(countries.length)],
+                    districts[random.generateWithoutStart(districts.length)],
+                    cities[random.generateWithoutStart(cities.length)],
+                    streets[random.generateWithoutStart(streets.length)],
+                    Integer.toString(random.generateWithStart(1, 301)),
+                    Integer.toString(random.generateWithStart(1, 1000))};
 
-            File filename = new File(OUTPUT_PATH + "Люди.xls");
-            FileOutputStream fileOut = new FileOutputStream(filename);
+            people.createRow(cells, 0);
+        }
+
+        File filename = new File(OUTPUT_PATH + "Люди.xls");
+
+        try(FileOutputStream fileOut = new FileOutputStream(filename)) {
             people.write(fileOut);
-            fileOut.close();
             people.close();
+
             System.out.println("Файл создан. Путь: " + filename.getAbsolutePath());
 
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }

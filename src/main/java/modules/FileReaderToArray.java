@@ -1,4 +1,4 @@
-package modules;
+package main.java.modules;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
