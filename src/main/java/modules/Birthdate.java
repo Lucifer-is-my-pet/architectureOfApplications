@@ -20,7 +20,13 @@ class Birthdate {
 
     Birthdate(String pattern) {
         this.pattern = pattern;
+    }
 
+    String get() {
+        return this.birthdate;
+    }
+
+    void set() {
         DateFormat dateFormat = new SimpleDateFormat(this.pattern);
         GregorianCalendar birthday = new GregorianCalendar();
 
@@ -31,10 +37,6 @@ class Birthdate {
         birthday.set(Calendar.DAY_OF_YEAR, dayOfYear);
 
         this.birthdate = dateFormat.format(birthday.getTime());
-    }
-
-    String get() {
-        return this.birthdate;
     }
 
     long getAge() {

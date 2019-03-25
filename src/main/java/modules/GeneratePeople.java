@@ -48,6 +48,7 @@ class GeneratePeople {
         for (int i = 1; i < rowsCount + 1; i++) {
             String sex = (i % 2 == 0) ? MALE : FEMALE;
             Birthdate birthdate = new Birthdate("dd-MM-yyyy");
+            birthdate.set();
 
             String[] cells = {names.get(sex)[random.generateWithoutStart(names.get(sex).length)],
                     surnames.get(sex)[random.generateWithoutStart(surnames.get(sex).length)],
