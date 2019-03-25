@@ -11,44 +11,44 @@ import java.util.stream.IntStream;
  */
 class ITNGenerator {
 
-    private ArrayList<Integer> ITN;
+    private ArrayList<Integer> itn;
 
     private final int[] COEFFICIENTS_FOR_N11 = {7, 2, 4, 10, 3, 5, 9, 4, 6, 8}; // коэффициенты для вычисления 11 цифры
     private final int[] COEFFICIENTS_FOR_N12 = {3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8}; // -//- 12 цифры
 
     ITNGenerator(int regionNumber) {
-        this.ITN = new ArrayList<>();
+        this.itn = new ArrayList<>();
 
-        int[] n110 = {regionNumber / 10, regionNumber % 10, 0, 0, 0, 0, 0, 0, 0, 0}; // цифры от 1 до 10, первые две определены регионом
+        int[] digitsFrom1to10 = {regionNumber / 10, regionNumber % 10, 0, 0, 0, 0, 0, 0, 0, 0}; // цифры от 1 до 10, первые две определены регионом
         for (int i = 2; i < 10; i++) {
-            n110[i] = ThreadLocalRandom.current().nextInt(0, 10);
+            digitsFrom1to10[i] = ThreadLocalRandom.current().nextInt(0, 10);
         }
 
-        int[] n110withCoefficients = multiplyDigits(n110, COEFFICIENTS_FOR_N11);
+        int[] digitsFrom1to10withCoefficients = multiplyDigits(digitsFrom1to10, COEFFICIENTS_FOR_N11);
 
-        int n11 = calculateN(n110withCoefficients);
+        int digit11 = calculateModules(digitsFrom1to10withCoefficients);
 
-        int[] n111withCoefficients = multiplyDigits(n110, COEFFICIENTS_FOR_N12);
-        n111withCoefficients = ArrayUtils.add(n111withCoefficients, n11 * COEFFICIENTS_FOR_N12[10]);
+        int[] digitsFrom1to11withCoefficients = multiplyDigits(digitsFrom1to10, COEFFICIENTS_FOR_N12);
+        digitsFrom1to11withCoefficients = ArrayUtils.add(digitsFrom1to11withCoefficients, digit11 * COEFFICIENTS_FOR_N12[10]);
 
-        int n12 = calculateN(n111withCoefficients);
+        int digit12 = calculateModules(digitsFrom1to11withCoefficients);
 
-        for (int digit : n110) {
-            this.ITN.add(digit);
+        for (int digit : digitsFrom1to10) {
+            this.itn.add(digit);
         }
-        this.ITN.add(n11);
-        this.ITN.add(n12);
+        this.itn.add(digit11);
+        this.itn.add(digit12);
     }
 
     String getString() {
-        String result = "";
-        for (int digit : this.ITN) {
-            result += digit;
+        StringBuilder result = new StringBuilder();
+        for (int digit : this.itn) {
+            result.append(digit);
         }
-        return result;
+        return result.toString();
     }
 
-    private int calculateN(int[] digitArray) {
+    private int calculateModules(int[] digitArray) {
         return (IntStream.of(digitArray).sum() % 11) % 10;
     }
 
