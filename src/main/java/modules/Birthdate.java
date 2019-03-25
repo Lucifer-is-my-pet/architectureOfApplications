@@ -3,17 +3,15 @@ package modules;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
 /*
-* Генерирует дату рождения и высчитывает возраст, исходя из сгенерированного
+ * Генерирует дату рождения и высчитывает возраст, исходя из сгенерированного
  */
 class Birthdate {
 
@@ -28,7 +26,7 @@ class Birthdate {
         return this.birthdate;
     }
 
-    void generateBirthdate() {
+    void set() {
         DateFormat dateFormat = new SimpleDateFormat(this.pattern);
         GregorianCalendar birthday = new GregorianCalendar();
 
@@ -39,16 +37,6 @@ class Birthdate {
         birthday.set(Calendar.DAY_OF_YEAR, dayOfYear);
 
         this.birthdate = dateFormat.format(birthday.getTime());
-    }
-
-    void setBirthdate(String birthdate) {
-        this.birthdate = birthdate;
-    }
-
-    String getFormattedBirthdate(String birthdate, String pattern) {
-        LocalDate localBirthDate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern(pattern));
-
-        return DateTimeFormatter.ofPattern(this.pattern, Locale.ENGLISH).format(localBirthDate);
     }
 
     long getAge() {
