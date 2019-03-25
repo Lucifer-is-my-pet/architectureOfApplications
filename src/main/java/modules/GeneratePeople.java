@@ -55,7 +55,8 @@ class GeneratePeople {
         patronNames.put(MALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_m.txt"));
         patronNames.put(FEMALE, readerToArray.readLines(RESOURCES_PATH + "Patronymic_f.txt"));
 
-        int rowsCount = new RandomNumber(1, 31).get();
+        RandomNumber random = new RandomNumber();
+        int rowsCount = random.generateWithStart(1, 31) + 1;
 
         HSSFWorkbookGenerator people = new HSSFWorkbookGenerator(SHEETS_NAMES);
         people.createRow(COLUMNS_NAMES, 0); // заголовки
@@ -67,7 +68,7 @@ class GeneratePeople {
         jdbc.executeCommands("", "CREATE TABLE address (" + SQL_ADDRESS_COLUMNS + ");");
         jdbc.executeCommands("", "CREATE TABLE persons (" + SQL_PERSONS_COLUMNS + ");");
 
-        for (int i = 1; i < rowsCount + 1; i++) {
+        for (int i = 1; i < rowsCount; i++) {
             ArrayList<String> cells = new ArrayList<>();
             try {
                 InetAddress.getByName("randomuser.me");
@@ -80,54 +81,51 @@ class GeneratePeople {
                 cells = gson.fromJson(resp, ArrayList.class);
                 cells.set(4, (cells.get(4).equals("Male")) ? MALE : FEMALE);
                 cells.set(6, new ITNGenerator(77).getString());
-                cells.add(new RandomNumber(1, 1000).getString()); // в данных нет квартир
+                cells.add(Integer.toString(random.generateWithStart(1, 1000))); // в данных нет квартир
 
                 String lastTd = "0";
                 try {
-                    lastTd = Integer.toString(jdbc.insert("address", new String[] {"postcode", "country", "region", "city", "street", "house", "flat"},
+                    lastTd = Integer.toString(jdbc.insert("address", new String[]{"postcode", "country", "region", "city", "street", "house", "flat"},
                             (String[]) Arrays.copyOfRange(cells.toArray(), 7, cells.size())).getInt("id"));
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-                jdbc.insert("persons", new String[] {"surname", "name", "middlename", "birthday", "gender", "inn", "address_id"},
-                        new String[] {cells.get(1), cells.get(0), cells.get(2), cells.get(5), cells.get(4), cells.get(6), lastTd});
+                jdbc.insert("persons", new String[]{"surname", "name", "middlename", "birthday", "gender", "inn", "address_id"},
+                        new String[]{cells.get(1), cells.get(0), cells.get(2), cells.get(5), cells.get(4), cells.get(6), lastTd});
             } catch (UnknownHostException ex) {
                 System.out.println("Сеть отсутствует, генерирую из файлов строку номер " + (i + 1));
 //                cells.clear();
 
                 String sex = (i % 2 == 0) ? MALE : FEMALE;
                 Birthdate birthdate = new Birthdate("dd-MM-yyyy");
-                birthdate.generateBirthdate();
+                birthdate.set();
 
-                cells.add(names.get(sex)[new RandomNumber(names.get(sex).length).get()]);
-                cells.add(surnames.get(sex)[new RandomNumber(surnames.get(sex).length).get()]);
-                cells.add(patronNames.get(sex)[new RandomNumber(patronNames.get(sex).length).get()]);
+                cells.add(names.get(sex)[random.generateWithoutStart(names.get(sex).length)]);
+                cells.add(surnames.get(sex)[random.generateWithoutStart(surnames.get(sex).length)]);
+                cells.add(patronNames.get(sex)[random.generateWithoutStart(patronNames.get(sex).length)]);
                 cells.add(Long.toString(birthdate.getAge()));
                 cells.add(sex);
                 cells.add(birthdate.get());
                 cells.add(new ITNGenerator(77).getString());
-                cells.add(new RandomNumber(100000, 200001).getString());
-                cells.add(countries[new RandomNumber(countries.length).get()]);
-                cells.add(districts[new RandomNumber(districts.length).get()]);
-                cells.add(cities[new RandomNumber(cities.length).get()]);
-                cells.add(streets[new RandomNumber(streets.length).get()]);
-                cells.add(new RandomNumber(1, 301).getString());
-                cells.add(new RandomNumber(1, 1000).getString());
+                cells.add(Integer.toString(random.generateWithStart(100000, 200001)));
+                cells.add(countries[random.generateWithoutStart(countries.length)]);
+                cells.add(districts[random.generateWithoutStart(districts.length)]);
+                cells.add(cities[random.generateWithoutStart(cities.length)]);
+                cells.add(streets[random.generateWithoutStart(streets.length)]);
+                cells.add(Integer.toString(random.generateWithStart(1, 301)));
+                cells.add(Integer.toString(random.generateWithStart(1, 1000)));
             }
             people.createRow(cells, 0);
         }
 
-        try {
-            File filename = new File(OUTPUT_PATH + "Люди.xls");
-            FileOutputStream fileOut = new FileOutputStream(filename);
+        File filename = new File(OUTPUT_PATH + "Люди.xls");
+        try (FileOutputStream fileOut = new FileOutputStream(filename)) {
             people.write(fileOut);
-            fileOut.close();
             people.close();
-            System.out.println("Файл создан. Путь: " + filename.getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
 
+            System.out.println("Файл создан. Путь: " + filename.getAbsolutePath());
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 }
