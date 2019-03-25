@@ -44,8 +44,8 @@ class GeneratePeople {
         people.createRow(COLUMNS_NAMES, 0); // заголовки
 
         RandomNumber random = new RandomNumber();
-        int rowsCount = random.generateWithStart(1, 31);
-        for (int i = 1; i < rowsCount + 1; i++) {
+        int rowsCount = random.generateWithStart(1, 31) + 1;
+        for (int i = 1; i < rowsCount; i++) {
             String sex = (i % 2 == 0) ? MALE : FEMALE;
             Birthdate birthdate = new Birthdate("dd-MM-yyyy");
             birthdate.set();
