@@ -1,9 +1,6 @@
-package modules;
-
-import org.junit.jupiter.api.DisplayName;
+package modules.JDBC;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class JDBC {
 
@@ -15,7 +12,7 @@ public class JDBC {
     /*
      * Для различных команд
      * */
-    void executeCommands(String dbName, String... commands) {
+    public void executeCommands(String dbName, String... commands) {
         try (Connection conn = DriverManager.getConnection(dbURL + dbName, USER, PASS);
              Statement statement = conn.createStatement()) {
 
@@ -31,7 +28,7 @@ public class JDBC {
     /*
      * Если нужен результат запроса
      * */
-    ResultSet executeQuery(String dbName, String command) {
+    public ResultSet executeQuery(String dbName, String command) {
         ResultSet resultSet = null;
         try (Connection conn = DriverManager.getConnection(dbURL + dbName, USER, PASS);
              Statement statement = conn.createStatement()) {

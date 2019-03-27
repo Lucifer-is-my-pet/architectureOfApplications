@@ -45,3 +45,4 @@ hs_err_pid*
 build/
 architectureOfApplications.iml
 out/
+src/test/

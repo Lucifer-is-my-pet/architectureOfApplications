@@ -1,4 +1,4 @@
-package modules;
+package modules.ITNGenerator;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -9,14 +9,14 @@ import java.util.stream.IntStream;
 /*
  * Создаёт валидный ИНН физического лица (12 цифр)
  */
-class ITNGenerator {
+public class ITNGenerator {
 
     private ArrayList<Integer> itn;
 
     private final int[] COEFFICIENTS_FOR_N11 = {7, 2, 4, 10, 3, 5, 9, 4, 6, 8}; // коэффициенты для вычисления 11 цифры
     private final int[] COEFFICIENTS_FOR_N12 = {3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8}; // -//- 12 цифры
 
-    ITNGenerator(int regionNumber) {
+    public ITNGenerator(int regionNumber) {
         this.itn = new ArrayList<>();
 
         int[] digitsFrom1to10 = {regionNumber / 10, regionNumber % 10, 0, 0, 0, 0, 0, 0, 0, 0}; // цифры от 1 до 10, первые две определены регионом
@@ -40,7 +40,8 @@ class ITNGenerator {
         this.itn.add(digit12);
     }
 
-    String getString() {
+    @Override
+    public String toString() {
         StringBuilder result = new StringBuilder();
         for (int digit : this.itn) {
             result.append(digit);

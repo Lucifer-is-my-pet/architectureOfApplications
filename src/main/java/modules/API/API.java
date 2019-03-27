@@ -1,4 +1,4 @@
-package modules;
+package modules.API;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -12,11 +12,11 @@ public class API {
 
     private String url;
 
-    API(String url) {
+    public API(String url) {
         this.url = url;
     }
 
-    String getResponse(int results, HashMap<String, String> params, String additionalParam) {
+    public String getResponse(int results, HashMap<String, String> params) {
         HttpRequest request = Unirest.get(this.url)
                 .queryString("results", results);
         HttpResponse jsonResponse = null;
@@ -24,8 +24,6 @@ public class API {
         for (Map.Entry<String, String> pair : params.entrySet()) {
             request = request.queryString(pair.getKey(), pair.getValue());
         }
-
-        request = request.queryString(additionalParam, "");
 
 //        System.out.println(request.getUrl());
 
