@@ -1,6 +1,7 @@
-package modules;
+package modules.Deserializer;
 
 import com.google.gson.*;
+import modules.Birthdate.Birthdate;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Type;

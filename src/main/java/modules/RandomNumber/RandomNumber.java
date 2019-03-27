@@ -1,16 +1,16 @@
-package modules;
+package modules.RandomNumber;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-class RandomNumber {
+public class RandomNumber {
 
-    RandomNumber() {}
+    public RandomNumber() {}
 
-    int generateWithoutStart(int bound) {
+    public int generateWithoutStart(int bound) {
         return ThreadLocalRandom.current().nextInt(0, bound);
     }
 
-    int generateWithStart(int start, int bound) {
+    public int generateWithStart(int start, int bound) {
         return ThreadLocalRandom.current().nextInt(start, bound);
     }
 }
