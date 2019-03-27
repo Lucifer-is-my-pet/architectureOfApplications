@@ -25,7 +25,7 @@ public class ArrayListFiller {
     private Map<String, String[]> names = new HashMap<>();
     private Map<String, String[]> surnames = new HashMap<>();
     private Map<String, String[]> patronNames = new HashMap<>();
-    
+
     public ArrayListFiller(String sex) {
         this.currentSex = sex;
         

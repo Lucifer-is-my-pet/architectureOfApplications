@@ -39,7 +39,7 @@ class GeneratePeople {
         people.createRow(COLUMNS_NAMES, 0); // заголовки
 
         for (int i = 1; i < rowsCount; i++) {
-            ArrayList<String> cells = new ArrayList<>();
+            ArrayList<String> cells;
             try {
                 InetAddress.getByName("randomuser.me");
                 String resp = new API("https://randomuser.me/api/").getResponse(1, API_PARAMS);
