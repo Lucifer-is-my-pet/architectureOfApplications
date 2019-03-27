@@ -1,5 +1,11 @@
 package modules;
 
+import modules.Birthdate.Birthdate;
+import modules.FileReaderToArray.FileReaderToArray;
+import modules.HSSFWorkbookGenerator.HSSFWorkbookGenerator;
+import modules.ITNGenerator.ITNGenerator;
+import modules.RandomNumber.RandomNumber;
+
 import java.io.*;
 import java.util.*;
 

@@ -45,3 +45,4 @@ factoryConfiguration.json
 .gradle
 build/
 out/
+src/test/
