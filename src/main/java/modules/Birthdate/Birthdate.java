@@ -27,7 +27,7 @@ public class Birthdate {
         return this.birthdate;
     }
 
-    public void set() {
+    public void generate() {
         DateFormat dateFormat = new SimpleDateFormat(this.pattern);
         GregorianCalendar birthday = new GregorianCalendar();
 
@@ -40,10 +40,14 @@ public class Birthdate {
         this.birthdate = dateFormat.format(birthday.getTime());
     }
 
-    public String getFormattedBirthdate(String birthdate, String pattern) {
-        LocalDate localBirthDate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern(pattern));
+    public String getFormattedBirthdate(String birthdate, String currentPattern) {
+        LocalDate localBirthDate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern(currentPattern));
 
         return DateTimeFormatter.ofPattern(this.pattern, Locale.ENGLISH).format(localBirthDate);
+    }
+
+    public void setBirthdate(String birthdate) {
+        this.birthdate = birthdate;
     }
 
     public long getAge() {
