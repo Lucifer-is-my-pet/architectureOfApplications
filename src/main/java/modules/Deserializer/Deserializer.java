@@ -60,7 +60,7 @@ public class Deserializer implements JsonDeserializer<ArrayList> {
         result.add(jsonObject.get("dob").getAsJsonObject().get("age").getAsString());
         result.add(StringUtils.capitalize(jsonObject.get("gender").getAsString()));
 
-        Birthdate bd = new Birthdate("dd-MM-yyy"); // конвертируем в требуемый формат
+        Birthdate bd = new Birthdate("dd-MM-yyyy"); // конвертируем в требуемый формат
         String actualBd = jsonObject.get("dob").getAsJsonObject().get("date").getAsString().split("T")[0];
         result.add(bd.getFormattedBirthdate(actualBd, "yyyy-MM-dd"));
 

@@ -65,7 +65,8 @@ public class ArrayListFiller {
             result.add(this.person.getString("surname"));
             result.add(this.person.getString("middlename"));
 
-            birthdate.setBirthdate(this.person.getDate("birthday").toString());
+            String birthdateFromDB = this.person.getDate("birthday").toString();
+            birthdate.setBirthdate(birthdate.getFormattedBirthdate(birthdateFromDB, "yyyy-MM-dd"));
             result.add(Long.toString(birthdate.getAge()));
 
             result.add(this.person.getString("gender").equals("М") ? MALE : FEMALE);

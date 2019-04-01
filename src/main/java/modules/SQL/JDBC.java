@@ -77,6 +77,7 @@ public class JDBC {
             query.append(coloumns[i]).append(", ");
         }
         query.append(coloumns[coloumns.length - 1]).append(") VALUES (");
+
         for (int i = 0; i < values.length; i++) {
             StringBuilder valueToAppend = new StringBuilder().append(values[i]);
             if (ArrayUtils.contains(indexesOfStrings, i)) {
@@ -105,7 +106,6 @@ public class JDBC {
         }
     }
 
-    // todo определять, где строки, а где нет
     public void update(String tablename, String whereColoumn, String whereValue, String[] coloumnsToUpdate,
                                    String[] updatedValues, int[] indexesOfStrings) {
         if (coloumnsToUpdate.length != updatedValues.length) {
@@ -113,14 +113,22 @@ public class JDBC {
         }
 
         StringBuilder query = new StringBuilder().append("UPDATE ").append(this.dbName).append(".").append(tablename).append(" SET ");
-        for (int i = 0; i < coloumnsToUpdate.length - 1; i++) {
+        for (int i = 0; i < updatedValues.length; i++) {
             StringBuilder valueToUpdate = new StringBuilder().append(updatedValues[i]);
-            query.append(coloumnsToUpdate[i]).append(" = '").append(updatedValues[i]).append("', ");
+            if (ArrayUtils.contains(indexesOfStrings, i)) {
+                valueToUpdate.insert(0, "'");
+                valueToUpdate.append("'");
+            }
+            query.append(coloumnsToUpdate[i]).append(" = ").append(valueToUpdate);
+
+            if (i < updatedValues.length - 1) {
+                query.append(", ");
+            }
         }
-        query.append(coloumnsToUpdate[coloumnsToUpdate.length - 1]).append(" = '")
-                .append(updatedValues[updatedValues.length - 1]).append("' WHERE ").append(whereColoumn).append(" = ")
+        query.append(" WHERE ").append(whereColoumn).append(" = ")
                 .append(whereValue).append(";");
 
+        System.out.println(query);
         try (Connection conn = DriverManager.getConnection(getURL(), this.user, this.password);
              Statement statement = conn.createStatement()) {
             statement.executeUpdate(query.toString(), Statement.RETURN_GENERATED_KEYS);
@@ -130,7 +138,6 @@ public class JDBC {
 //            return result;
         } catch (SQLException e) {
             e.printStackTrace();
-//            return null;
         }
     }
 
@@ -139,24 +146,27 @@ public class JDBC {
             throw new ArrayIndexOutOfBoundsException("Количество столбцов не равно количеству значений");
         }
 
+        String[] coloumnsToSelect = coloumns;
+        String[] valuesToSelect = values;
+
         int hyphenIndex = Arrays.asList(values).indexOf("-");
 
         if (hyphenIndex > -1) {
             List<String> valuesList = new LinkedList<>(Arrays.asList(values));
             valuesList.remove(hyphenIndex);
-            values = valuesList.toArray(new String[valuesList.size()]);
+            valuesToSelect = valuesList.toArray(new String[valuesList.size()]);
             List<String> coloumnList = new LinkedList<>(Arrays.asList(coloumns));
             coloumnList.remove(hyphenIndex);
-            coloumns = coloumnList.toArray(new String[coloumnList.size()]);
+            coloumnsToSelect = coloumnList.toArray(new String[coloumnList.size()]);
         }
-        int lastIndex = coloumns.length - 1;
+        int lastIndex = coloumnsToSelect.length - 1;
 
         StringBuilder query = new StringBuilder().append("SELECT * FROM ").append(this.dbName).append(".")
                 .append(tablename).append(" WHERE ");
         for (int i = 0; i < lastIndex; i++) {
-            query.append(coloumns[i]).append(" LIKE '%").append(values[i]).append("%' AND ");
+            query.append(coloumnsToSelect[i]).append(" LIKE '%").append(valuesToSelect[i]).append("%' AND ");
         }
-        query.append(coloumns[lastIndex]).append(" LIKE '%").append(values[lastIndex]).append("%';");
+        query.append(coloumnsToSelect[lastIndex]).append(" LIKE '%").append(valuesToSelect[lastIndex]).append("%';");
 
         try {
             CachedRowSetImpl result = new CachedRowSetImpl();

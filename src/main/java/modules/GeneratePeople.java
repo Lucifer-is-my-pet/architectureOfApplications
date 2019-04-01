@@ -79,12 +79,11 @@ class GeneratePeople {
                         new String[]{cells.get(1), cells.get(0), cells.get(2)});
                 try {
                     if (sameNamePerson.next()) {
-                        // берём adress_id результата, делаем апдейт полю
                         String address_id = String.valueOf(sameNamePerson.getInt("address_id"));
                         jdbc.update(SQL_ADDRESS,
                                 "id", address_id, new String[]{"postcode", "country", "region", "city", "street", "house", "flat"},
                                 Arrays.copyOfRange(cells.toArray(), 7, cells.size(), String[].class),
-                                new int[]{1, 2, 3, 4});
+                                new int[]{0, 1, 2, 3, 4});
                         jdbc.update(SQL_PERSONS,
                                 "address_id", address_id, new String[]{"birthday", "gender", "inn"},
                                 new String[] {new Birthdate("yyyy-MM-dd").getFormattedBirthdate(cells.get(5), "dd-MM-yyyy"),
@@ -95,7 +94,7 @@ class GeneratePeople {
                         CachedRowSetImpl insertResult = jdbc.insert(SQL_ADDRESS,
                                 new String[]{"postcode", "country", "region", "city", "street", "house", "flat"},
                                 Arrays.copyOfRange(cells.toArray(), 7, cells.size(), String[].class),
-                                new int[]{1, 2, 3, 4});
+                                new int[]{0, 1, 2, 3, 4});
                         insertResult.next();
                         lastTd = Integer.toString(insertResult.getInt(1));
 
@@ -122,7 +121,7 @@ class GeneratePeople {
                         addressFromDB.next();
                         cells = new ArrayListFiller(personFromDB, addressFromDB).fillFromDB();
                     } else {
-                        System.out.println("В БД не хватает строк, генерирую из файлов строку номер " + (i + 1));
+                        System.out.println("Сеть отсутствует, в БД не хватает строк, генерирую из файлов строку номер " + (i + 1));
 //                cells.clear();
 
                         String sex = (i % 2 == 0) ? MALE : FEMALE;
