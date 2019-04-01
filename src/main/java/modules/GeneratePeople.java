@@ -37,8 +37,8 @@ class GeneratePeople {
             SQL_ADDRESS = "address",
             SQL_PERSONS = "persons",
             SQL_ADDRESS_COLUMNS = "id int auto_increment not null, postcode varchar(256), " +
-            "country varchar(256), region varchar(256), city varchar(256), street varchar(256), " +
-            "house int, flat int, primary key (id)",
+                    "country varchar(256), region varchar(256), city varchar(256), street varchar(256), " +
+                    "house int, flat int, primary key (id)",
             SQL_PERSONS_COLUMNS = "id int auto_increment not null, surname varchar(256), " +
                     "name varchar(256), middlename varchar(256), birthday date, gender varchar(1), " +
                     "inn varchar(12), address_id int not null, foreign key (address_id) references address(id), primary key (id)";
@@ -86,7 +86,7 @@ class GeneratePeople {
                                 new int[]{0, 1, 2, 3, 4});
                         jdbc.update(SQL_PERSONS,
                                 "address_id", address_id, new String[]{"birthday", "gender", "inn"},
-                                new String[] {new Birthdate("yyyy-MM-dd").getFormattedBirthdate(cells.get(5), "dd-MM-yyyy"),
+                                new String[]{new Birthdate("yyyy-MM-dd").getFormattedBirthdate(cells.get(5), "dd-MM-yyyy"),
                                         cells.get(4).equals("Male") ? "М" : "Ж", cells.get(6)},
                                 new int[]{0, 1});
                     } else {

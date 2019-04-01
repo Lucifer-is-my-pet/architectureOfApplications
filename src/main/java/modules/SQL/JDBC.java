@@ -91,8 +91,9 @@ public class JDBC {
                 query.append(valueToAppend).append(", ");
             }
 
-        };
-        System.out.println(query);
+        }
+
+//        System.out.println(query);
         try (Connection conn = DriverManager.getConnection(getURL(), this.user, this.password);
              Statement statement = conn.createStatement()) {
             statement.executeUpdate(query.toString(), Statement.RETURN_GENERATED_KEYS);
@@ -107,7 +108,7 @@ public class JDBC {
     }
 
     public void update(String tablename, String whereColoumn, String whereValue, String[] coloumnsToUpdate,
-                                   String[] updatedValues, int[] indexesOfStrings) {
+                       String[] updatedValues, int[] indexesOfStrings) {
         if (coloumnsToUpdate.length != updatedValues.length) {
             throw new ArrayIndexOutOfBoundsException("Количество столбцов не равно количеству значений");
         }
@@ -128,14 +129,11 @@ public class JDBC {
         query.append(" WHERE ").append(whereColoumn).append(" = ")
                 .append(whereValue).append(";");
 
-        System.out.println(query);
+//        System.out.println(query);
         try (Connection conn = DriverManager.getConnection(getURL(), this.user, this.password);
              Statement statement = conn.createStatement()) {
             statement.executeUpdate(query.toString(), Statement.RETURN_GENERATED_KEYS);
-//            CachedRowSetImpl result = new CachedRowSetImpl();
-            /*ResultSet rs = */statement.getGeneratedKeys();
-//            result.populate(rs);
-//            return result;
+            statement.getGeneratedKeys();
         } catch (SQLException e) {
             e.printStackTrace();
         }
