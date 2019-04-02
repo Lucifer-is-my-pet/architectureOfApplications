@@ -1,4 +1,4 @@
-package main.java.modules;
+package main.java.modules.Birthdate;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,14 +13,20 @@ import java.util.concurrent.ThreadLocalRandom;
 /*
 * Генерирует дату рождения и высчитывает возраст, исходя из сгенерированного
  */
-class Birthdate {
+public class Birthdate {
 
     private String birthdate;
     private String pattern;
 
-    Birthdate(String pattern) {
+    public Birthdate(String pattern) {
         this.pattern = pattern;
+    }
 
+    public String get() {
+        return this.birthdate;
+    }
+
+    public void set() {
         DateFormat dateFormat = new SimpleDateFormat(this.pattern);
         GregorianCalendar birthday = new GregorianCalendar();
 
@@ -33,11 +39,7 @@ class Birthdate {
         this.birthdate = dateFormat.format(birthday.getTime());
     }
 
-    String get() {
-        return this.birthdate;
-    }
-
-    long getAge() {
+    public long getAge() {
         LocalDate localBirthDate = LocalDate.parse(this.birthdate, DateTimeFormatter.ofPattern(this.pattern));
         LocalDate now = LocalDate.now(ZoneId.systemDefault());
 

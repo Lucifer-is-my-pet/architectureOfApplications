@@ -1,5 +1,11 @@
 package main.java.modules;
 
+import main.java.modules.Birthdate.Birthdate;
+import main.java.modules.FileReaderToArray.FileReaderToArray;
+import main.java.modules.HSSFWorkbookGenerator.HSSFWorkbookGenerator;
+import modules.ITNGenerator.ITNGenerator;
+import modules.RandomNumber.RandomNumber;
+
 import java.io.*;
 import java.util.*;
 
@@ -49,6 +55,7 @@ class GeneratePeople {
         for (int i = 1; i < rowsCount; i++) {
             String sex = (i % 2 == 0) ? MALE : FEMALE;
             Birthdate birthdate = new Birthdate("dd-MM-yyyy");
+            birthdate.set();
 
             String[] cells = {names.get(sex)[random.generateWithoutStart(names.get(sex).length)],
                     surnames.get(sex)[random.generateWithoutStart(surnames.get(sex).length)],
@@ -75,7 +82,6 @@ class GeneratePeople {
             people.close();
 
             System.out.println("Файл создан. Путь: " + filename.getAbsolutePath());
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }

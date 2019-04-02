@@ -1,4 +1,4 @@
-package main.java.modules;
+package main.java.modules.HSSFWorkbookGenerator;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -11,13 +11,13 @@ import java.util.*;
 /*
 * Класс для работы с Excel-файлами
 */
-class HSSFWorkbookGenerator {
+public class HSSFWorkbookGenerator {
 
     private HSSFWorkbook workbook;
     private ArrayList<HSSFSheet> sheets;
     private int rowsCount = 0;
 
-    HSSFWorkbookGenerator(String[] sheetsNames) {
+    public HSSFWorkbookGenerator(String[] sheetsNames) {
         this.workbook = new HSSFWorkbook();
         this.sheets = new ArrayList<>();
         for (String sheetsName : sheetsNames) {
@@ -25,7 +25,7 @@ class HSSFWorkbookGenerator {
         }
     }
 
-    void createRow(String[] cells, int sheetNumber) {
+    public void createRow(String[] cells, int sheetNumber) {
         HSSFRow row = this.sheets.get(sheetNumber).createRow((short)this.rowsCount);
         this.rowsCount += 1;
 
@@ -34,11 +34,11 @@ class HSSFWorkbookGenerator {
         }
     }
 
-    void write(OutputStream stream) throws IOException {
+    public void write(OutputStream stream) throws IOException {
         workbook.write(stream);
     }
 
-    void close() throws IOException {
+    public void close() throws IOException {
         workbook.close();
     }
 }

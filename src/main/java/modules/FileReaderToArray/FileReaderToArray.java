@@ -1,4 +1,4 @@
-package main.java.modules;
+package main.java.modules.FileReaderToArray;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-class FileReaderToArray {
+public class FileReaderToArray {
 
-    FileReaderToArray() {}
+    public FileReaderToArray() {}
 
-    String[] readLines(String filename) {
+    public String[] readLines(String filename) {
         List<String> lines = new ArrayList<String>();
         String line;
 
